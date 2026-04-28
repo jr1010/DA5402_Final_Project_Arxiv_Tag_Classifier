@@ -172,6 +172,43 @@ http://host.docker.internal:9090
 
 ---
 
+## 🚨 Alertmanager Configuration
+
+An example configuration is provided at:
+
+monitoring/alertmanager_example.yml
+
+To enable alerts:
+
+cp monitoring/alertmanager_example.yml monitoring/alertmanager.yml
+
+---
+
+### ⚙️ Required Setup
+
+You must replace the SMTP placeholders in `alertmanager.yml` with your own credentials:
+
+<RECEIVER>
+<SENDER>
+<HOST:PORT>
+<USERNAME>
+<PASSWORD>
+
+Example providers:
+- Mailtrap
+- Gmail SMTP
+- Any SMTP-compatible service
+
+---
+
+### ⚠️ Important
+
+- Alerts will NOT work until SMTP credentials are configured  
+- Ensure the SMTP host and port are accessible from your system  
+- If using Gmail, you may need an App Password instead of your account password  
+
+---
+
 ## 🧪 Testing
 
 Run all tests:
