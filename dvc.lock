@@ -1,0 +1,145 @@
+schema: '2.0'
+stages:
+  preprocess:
+    cmd: python pipelines/preprocess.py
+    deps:
+    - path: data/raw/data.csv
+      hash: md5
+      md5: cef4887a2bdd31e562346a2152bebefd
+      size: 33544109
+    - path: pipelines/preprocess.py
+      hash: md5
+      md5: d8cf6635c3c61fe3c1aa0e49080dd381
+      size: 3728
+    params:
+      configs/params.yaml:
+        data:
+          max_features: 10000
+          ngram_range:
+          - 1
+          - 2
+          stop_words: english
+          sublinear_tf: true
+        labels:
+          selected:
+          - cs.lg
+          - cs.ai
+          - cs.cv
+          - cs.cl
+          - cs.ro
+        training:
+          test_size: 0.2
+          random_state: 42
+          threshold: 0.3
+    outs:
+    - path: data/processed/train.csv
+      hash: md5
+      md5: 24d8a0e06ad44a78b0d3a2d53fe80287
+      size: 38742970
+    - path: data/processed/val.csv
+      hash: md5
+      md5: d0de51a1b271ebad74f284c9b3b63f8b
+      size: 9674624
+  features:
+    cmd: python pipelines/features.py
+    deps:
+    - path: data/processed/train.csv
+      hash: md5
+      md5: 24d8a0e06ad44a78b0d3a2d53fe80287
+      size: 38742970
+    - path: pipelines/features.py
+      hash: md5
+      md5: c3203456ba137c7cde2afe9b42b02c1a
+      size: 2514
+    params:
+      configs/params.yaml:
+        data:
+          max_features: 10000
+          ngram_range:
+          - 1
+          - 2
+          stop_words: english
+          sublinear_tf: true
+    outs:
+    - path: artifacts/vectorizer.pkl
+      hash: md5
+      md5: f698878359dad94dfc6e489ffdb35ab9
+      size: 409270
+  train:
+    cmd: python pipelines/train.py
+    deps:
+    - path: artifacts/vectorizer.pkl
+      hash: md5
+      md5: f698878359dad94dfc6e489ffdb35ab9
+      size: 409270
+    - path: data/processed/train.csv
+      hash: md5
+      md5: 24d8a0e06ad44a78b0d3a2d53fe80287
+      size: 38742970
+    - path: data/processed/val.csv
+      hash: md5
+      md5: d0de51a1b271ebad74f284c9b3b63f8b
+      size: 9674624
+    - path: pipelines/train.py
+      hash: md5
+      md5: 799fb347d61e1a04a7d32762b0ee9dd4
+      size: 6756
+    params:
+      configs/params.yaml:
+        model:
+          fixed:
+            n_estimators: 200
+          search:
+            learning_rate:
+            - 0.01
+            - 0.05
+            - 0.1
+            - 0.2
+            num_leaves:
+            - 31
+            - 63
+            min_child_samples:
+            - 10
+            - 20
+        training:
+          test_size: 0.2
+          random_state: 42
+          threshold: 0.3
+    outs:
+    - path: artifacts/mlb.pkl
+      hash: md5
+      md5: b90f9f94dd8859162d9d535cdef0f0b0
+      size: 617
+    - path: artifacts/model.pkl
+      hash: md5
+      md5: 3adbac32ca35d67bdf5f4eb82e07aace
+      size: 5875440
+  evaluate:
+    cmd: python pipelines/evaluate.py
+    deps:
+    - path: artifacts/mlb.pkl
+      hash: md5
+      md5: b90f9f94dd8859162d9d535cdef0f0b0
+      size: 617
+    - path: artifacts/model.pkl
+      hash: md5
+      md5: 3adbac32ca35d67bdf5f4eb82e07aace
+      size: 5875440
+    - path: artifacts/vectorizer.pkl
+      hash: md5
+      md5: f698878359dad94dfc6e489ffdb35ab9
+      size: 409270
+    - path: data/processed/val.csv
+      hash: md5
+      md5: d0de51a1b271ebad74f284c9b3b63f8b
+      size: 9674624
+    - path: pipelines/evaluate.py
+      hash: md5
+      md5: 122980520427f47cd95b2d4c06d6356f
+      size: 3510
+    params:
+      configs/params.yaml:
+        training:
+          test_size: 0.2
+          random_state: 42
+          threshold: 0.3

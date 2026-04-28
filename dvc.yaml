@@ -1,0 +1,53 @@
+stages:
+
+  preprocess:
+    cmd: python pipelines/preprocess.py
+    deps:
+      - pipelines/preprocess.py
+      - data/raw/data.csv
+    params:
+      - configs/params.yaml:
+          - data
+          - labels
+          - training
+    outs:
+      - data/processed/train.csv
+      - data/processed/val.csv
+
+  features:
+    cmd: python pipelines/features.py
+    deps:
+      - pipelines/features.py
+      - data/processed/train.csv
+    params:
+      - configs/params.yaml:
+          - data
+    outs:
+      - artifacts/vectorizer.pkl
+
+  train:
+    cmd: python pipelines/train.py
+    deps:
+      - pipelines/train.py
+      - data/processed/train.csv
+      - data/processed/val.csv
+      - artifacts/vectorizer.pkl
+    params:
+      - configs/params.yaml:
+          - model
+          - training
+    outs:
+      - artifacts/model.pkl
+      - artifacts/mlb.pkl
+
+  evaluate:
+    cmd: python pipelines/evaluate.py
+    deps:
+      - pipelines/evaluate.py
+      - data/processed/val.csv
+      - artifacts/model.pkl
+      - artifacts/mlb.pkl
+      - artifacts/vectorizer.pkl
+    params:
+      - configs/params.yaml:
+          - training

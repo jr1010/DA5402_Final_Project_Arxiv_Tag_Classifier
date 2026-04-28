@@ -1,0 +1,40 @@
+global:
+  scrape_interval: 5s
+  evaluation_interval: 5s
+
+rule_files:
+  - "alert_rules.yml"
+
+# -----------------------
+# ALERTING
+# -----------------------
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - "localhost:9093"
+
+scrape_configs:
+  # -----------------------
+  # Frontend Metrics (Streamlit + Prometheus client)
+  # -----------------------
+  - job_name: "arxiv-classifier"
+    scrape_interval: 1s
+    static_configs:
+      - targets: ["localhost:8001"]
+
+  # -----------------------
+  # Backend Metrics (optional but recommended)
+  # -----------------------
+  # - job_name: "arxiv-backend"
+  #   scrape_interval: 2s
+  #   static_configs:
+  #     - targets: ["localhost:8000"]
+
+  # -----------------------
+  # Node Exporter (System Metrics)
+  # -----------------------
+  - job_name: "node-exporter"
+    scrape_interval: 2s
+    static_configs:
+      - targets: ["localhost:9100"]

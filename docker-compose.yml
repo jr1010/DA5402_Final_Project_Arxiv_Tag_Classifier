@@ -1,0 +1,49 @@
+services:
+
+  # -----------------------
+  # Backend (FastAPI)
+  # -----------------------
+  backend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.backend
+    container_name: backend
+    environment:
+      - MLFLOW_URL=http://host.docker.internal:5001/invocations
+    ports:
+      - "8000:8000"
+
+  # -----------------------
+  # Frontend (Streamlit)
+  # -----------------------
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.frontend
+    container_name: frontend
+    depends_on:
+      - backend
+    environment:
+      - BACKEND_URL=http://backend:8000
+    ports:
+      - "8501:8501"
+      - "8001:8001"
+
+  # -----------------------
+  # Grafana
+  # -----------------------
+  grafana:
+    image: grafana/grafana
+    # container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  grafana_data:

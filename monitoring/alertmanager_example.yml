@@ -1,0 +1,40 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: "mailtrap"
+  group_wait: 10s
+  group_interval: 30s
+  repeat_interval: 1m
+
+receivers:
+
+  - name: "mailtrap"
+    email_configs:
+      - to: "<RECEIVER>"
+        from: "<SENDER>"
+
+        smarthost: "<HOST:PORT>"
+        auth_username: "<USERNAME>"
+        auth_password: "<PASSWORD>"
+
+        require_tls: true
+
+        headers:
+          subject: "🚨 {{ .CommonLabels.alertname }}"
+
+        html: |
+          <h2>🚨 Alert: {{ .CommonLabels.alertname }}</h2>
+          <p><b>Severity:</b> {{ .CommonLabels.severity }}</p>
+          <p><b>Description:</b> {{ .CommonAnnotations.description }}</p>
+          <p><b>Time:</b> {{ (index .Alerts 0).StartsAt }}</p>
+
+# -----------------------
+# Silence / Inhibition
+# -----------------------
+inhibit_rules:
+  - source_match:
+      severity: "critical"
+    target_match:
+      severity: "warning"
+    equal: ["alertname"]

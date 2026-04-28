@@ -1,0 +1,34 @@
+data:
+  max_features: 10000
+  ngram_range: [1, 2]
+  stop_words: "english"
+  sublinear_tf: true
+
+labels:
+  selected:
+    - cs.lg
+    - cs.ai
+    - cs.cv
+    - cs.cl
+    - cs.ro
+
+model:
+  fixed:
+    n_estimators: 200
+
+  search:
+    learning_rate: [0.01, 0.05, 0.1, 0.2] 
+    num_leaves: [31, 63]                   
+    min_child_samples: [10, 20]             
+
+training:
+  test_size: 0.2
+  random_state: 42
+  threshold: 0.3
+
+paths:
+  vectorizer: artifacts/vectorizer.pkl
+  mlb: artifacts/mlb.pkl
+
+inference:
+  threshold: 0.3

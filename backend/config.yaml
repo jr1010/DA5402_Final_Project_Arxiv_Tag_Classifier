@@ -1,0 +1,9 @@
+mlflow:
+  url: "http://localhost:5001/invocations"
+
+paths:
+  vectorizer: "artifacts/vectorizer.pkl"
+  mlb: "artifacts/mlb.pkl"
+
+inference:
+  threshold: 0.3

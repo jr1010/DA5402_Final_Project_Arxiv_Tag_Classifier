@@ -1,0 +1,6 @@
+streamlit
+requests
+pandas
+prometheus-client
+psutil
+pyyaml
