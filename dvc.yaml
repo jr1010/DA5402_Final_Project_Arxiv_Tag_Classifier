@@ -51,3 +51,5 @@ stages:
     params:
       - configs/params.yaml:
           - training
+    metrics:
+      - artifacts/metrics.json

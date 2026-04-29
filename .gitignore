@@ -9,6 +9,7 @@
 /monitoring/data
 /logs
 .dvc/cache
+pids.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

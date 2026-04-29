@@ -290,7 +290,7 @@
             "axisBorderShow": true,
             "axisCenteredZero": false,
             "axisColorMode": "text",
-            "axisLabel": "Images Processed",
+            "axisLabel": "Files Processed",
             "axisPlacement": "auto",
             "barAlignment": 0,
             "barWidthFactor": 0.6,
@@ -395,14 +395,14 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "ffgpmnz8xnp4wa"
+            "uid": "cfkh45higoz5sc"
           },
           "editorMode": "code",
-          "expr": "increase(images_processed_total[5m])",
+          "expr": "increase(texts_processed_total[5m])",
           "instant": false,
           "legendFormat": "{{mode}}",
           "range": true,
-          "refId": "B"
+          "refId": "A"
         }
       ],
       "title": "FILES PROCESSED [Last 5 min]",
@@ -534,7 +534,7 @@
             "uid": "ffgpmnz8xnp4wa"
           },
           "editorMode": "code",
-          "expr": "rate(caption_requests_total[1m])",
+          "expr": "rate(arxiv_requests_total[1m])",
           "legendFormat": "{{mode}}",
           "range": true,
           "refId": "A"
@@ -657,6 +657,18 @@
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "cfkh45higoz5sc"
+          },
+          "editorMode": "code",
+          "expr": "(\n    frontend_latency_seconds_sum\n    / frontend_latency_seconds_count\n)",
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "B"
         }
       ],
       "title": "AVERAGE LATENCY",
@@ -1222,13 +1234,13 @@
     "list": []
   },
   "time": {
-    "from": "now-3h",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "Arxiv Classifier Monitoring UI",
   "uid": "ad7h569",
-  "version": 4,
+  "version": 6,
   "weekStart": ""
 }

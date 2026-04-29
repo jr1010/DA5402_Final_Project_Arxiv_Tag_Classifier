@@ -23,8 +23,7 @@ PROMETHEUS_CONFIG = os.path.join(MONITORING_DIR, "prometheus.yml")
 ALERTMANAGER_CONFIG = os.path.join(MONITORING_DIR, "alertmanager.yml")
 
 DOCKER_CMD = ["docker", "compose"]
-
-processes = []
+PID_FILE = "pids.txt"
 
 # ----------------------------
 # LOGGING
@@ -47,6 +46,23 @@ def is_port_active(port):
         return False
 
 
+def save_pid(pid):
+    with open(PID_FILE, "a") as f:
+        f.write(str(pid) + "\n")
+
+
+def load_pids():
+    if not os.path.exists(PID_FILE):
+        return []
+    with open(PID_FILE, "r") as f:
+        return [int(pid.strip()) for pid in f if pid.strip()]
+
+
+def clear_pids():
+    if os.path.exists(PID_FILE):
+        os.remove(PID_FILE)
+
+
 def run_process(cmd, name):
     logger.info(f"Starting {name}: {' '.join(cmd)}")
 
@@ -60,10 +76,10 @@ def run_process(cmd, name):
         stdout=log_file,
         stderr=log_file,
         stdin=subprocess.DEVNULL,
-        start_new_session=True  # 🔥 THIS detaches it
+        start_new_session=True  # creates new process group
     )
 
-    processes.append(proc)
+    save_pid(proc.pid)
     return proc
 
 
@@ -108,24 +124,22 @@ def start_mlflow():
 
 
 # ----------------------------
-# MONITORING (LOCAL BINARIES)
+# MONITORING
 # ----------------------------
 def start_monitoring():
-    logger.info("Starting monitoring stack (local binaries)...")
+    logger.info("Starting monitoring stack...")
 
-    # Prometheus
     run_process([
         PROMETHEUS_BIN,
-        f"--config.file={PROMETHEUS_CONFIG}"
+        f"--config.file={PROMETHEUS_CONFIG}",
+        "--storage.tsdb.path=/tmp/prometheus"
     ], "Prometheus")
 
-    # Alertmanager
     run_process([
         ALERTMANAGER_BIN,
         f"--config.file={ALERTMANAGER_CONFIG}"
     ], "Alertmanager")
 
-    # Node Exporter
     run_process([
         NODE_EXPORTER_BIN
     ], "Node Exporter")
@@ -159,12 +173,27 @@ def stop_all():
     docker_down()
     stop_mlflow()
 
-    for p in processes:
+    pids = load_pids()
+
+    for pid in pids:
         try:
-            p.terminate()
+            pgid = os.getpgid(pid)
+            logger.info(f"Stopping process group {pgid}")
+            os.killpg(pgid, signal.SIGTERM)
+        except Exception as e:
+            logger.warning(f"Failed to stop PID {pid}: {e}")
+
+    time.sleep(1)
+
+    # Force kill if still alive
+    for pid in pids:
+        try:
+            pgid = os.getpgid(pid)
+            os.killpg(pgid, signal.SIGKILL)
         except:
             pass
 
+    clear_pids()
     logger.info("All services stopped ✅")
 
 
@@ -196,21 +225,18 @@ def main():
 
     logger.info("Starting system...")
 
-    # Start MLflow
+    clear_pids()  # clean stale PIDs
+
     start_mlflow()
 
-    # Start monitoring if enabled
     if args.monitoring:
         start_monitoring()
 
-    # Start Docker (Grafana included if monitoring=True)
     docker_up(args.monitoring)
 
-    # Keep alive
-    # for p in processes:
-    #     p.wait()
     logger.info("All services started successfully ✅")
     logger.info("Run 'python run.py stop' to stop everything")
+
 
 if __name__ == "__main__":
     main()
