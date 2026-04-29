@@ -1,5 +1,6 @@
 # AIRFLOW DAG FOR DATA INGESTION AND CLEANINGimport sys
 import os
+import sys
 from datetime import datetime
 
 from airflow import DAG
@@ -15,8 +16,8 @@ sys.path.append(
 )
 
 # Import task logic
-from airflow.tasks.ingest import main as ingest_main
-from airflow.tasks.clean import main as clean_main
+from airflow_dag.tasks.ingest import main as ingest_main
+from airflow_dag.tasks.clean import main as clean_main
 
 
 # -------------------------

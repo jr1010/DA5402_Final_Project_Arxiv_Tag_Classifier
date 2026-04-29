@@ -10,6 +10,18 @@
 /logs
 .dvc/cache
 pids.txt
+airflow_dag/*.db
+airflow_dag/*.db-shm
+airflow_dag/*.db-wal
+airflow_dag/*.cfg
+airflow_dag/*.err
+airflow_dag/*.out
+airflow_dag/*.log
+airflow_dag/*.pid
+airflow_dag/logs/
+airflow_dag/webserver_config.py
+airflow_dag/standalone_admin_password.txt
+airflow_dag/simple_auth_manager_passwords.json*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
