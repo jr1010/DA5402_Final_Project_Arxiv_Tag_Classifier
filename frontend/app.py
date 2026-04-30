@@ -137,7 +137,7 @@ if mode == "Single Prediction":
                 # -------------------------
                 # Metrics: success
                 # -------------------------
-                metrics.FRONTEND_LATENCY.observe(latency)
+                metrics.FRONTEND_LATENCY.labels(mode='single').observe(latency)
                 metrics.TEXTS_PROCESSED.labels(mode="single").inc()
 
                 show_single_results(labels)
@@ -179,7 +179,7 @@ else:
                 # -------------------------
                 # Metrics: success
                 # -------------------------
-                metrics.FRONTEND_LATENCY.observe(latency)
+                metrics.FRONTEND_LATENCY.labels(mode='bulk').observe(latency)
                 metrics.TEXTS_PROCESSED.labels(mode="bulk").inc(len(texts))
                 metrics.BATCH_SIZE.observe(len(texts))
 

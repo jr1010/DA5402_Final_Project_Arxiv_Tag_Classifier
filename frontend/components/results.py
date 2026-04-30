@@ -107,7 +107,7 @@ def show_bulk_results(df, predictions):
 
     st.success("Batch processing complete")
 
-    st.dataframe(df, use_container_width=True)
+    st.dataframe(df, width='stretch')
 
     # -------------------------
     # Download button

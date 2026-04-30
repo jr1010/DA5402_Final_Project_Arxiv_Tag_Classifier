@@ -47,7 +47,18 @@ MEMORY_USAGE = Gauge(
 FRONTEND_LATENCY = Histogram(
     "frontend_latency_seconds",
     "End-to-end latency from frontend",
-    buckets=(0.1, 0.3, 0.5, 1, 2, 5, 10)
+    ["mode"],
+    buckets=(
+        0.01,   # 10 ms
+        0.025,  # 25 ms
+        0.05,   # 50 ms
+        0.075,  # 75 ms
+        0.1,    # 100 ms
+        0.2,    # 200 ms
+        0.5,    # 500 ms
+        1,      # 1 s
+        2       # 2 s
+    )
 )
 
 
