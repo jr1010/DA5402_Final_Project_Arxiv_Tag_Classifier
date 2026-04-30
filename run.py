@@ -137,7 +137,8 @@ def start_monitoring():
 
     run_process([
         ALERTMANAGER_BIN,
-        f"--config.file={ALERTMANAGER_CONFIG}"
+        f"--config.file={ALERTMANAGER_CONFIG}",
+        '--storage.path=/tmp/alertmanager'
     ], "Alertmanager")
 
     run_process([
