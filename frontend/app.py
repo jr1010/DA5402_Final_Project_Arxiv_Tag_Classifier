@@ -119,7 +119,7 @@ if mode == "Single Prediction":
         # -------------------------
         # Metrics: start
         # -------------------------
-        metrics.REQUEST_COUNTER.labels(mode="single").inc()
+        metrics.REQUEST_COUNTER.labels(mode="single").inc(0)
         metrics.ACTIVE_REQUESTS.inc()
         start_time = time.time()
 
@@ -138,7 +138,7 @@ if mode == "Single Prediction":
                 # Metrics: success
                 # -------------------------
                 metrics.FRONTEND_LATENCY.labels(mode='single').observe(latency)
-                metrics.TEXTS_PROCESSED.labels(mode="single").inc()
+                metrics.TEXTS_PROCESSED.labels(mode="single").inc(0)
 
                 show_single_results(labels)
 
