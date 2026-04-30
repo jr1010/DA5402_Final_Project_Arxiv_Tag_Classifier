@@ -23,6 +23,12 @@ if not is_port_in_use(8001):
 # -------------------------
 import metrics as metrics
 
+metrics.TEXTS_PROCESSED.labels(mode="single").inc(0)
+metrics.TEXTS_PROCESSED.labels(mode="bulk").inc(0)
+
+metrics.REQUEST_COUNTER.labels(mode="single").inc(0)
+metrics.REQUEST_COUNTER.labels(mode="bulk").inc(0)
+
 from utils import check_ready, predict_single, predict_batch
 from components.input_form import render_input_form
 from components.bulk_upload import render_bulk_upload
@@ -119,7 +125,7 @@ if mode == "Single Prediction":
         # -------------------------
         # Metrics: start
         # -------------------------
-        metrics.REQUEST_COUNTER.labels(mode="single").inc(0)
+        metrics.REQUEST_COUNTER.labels(mode="single").inc()
         metrics.ACTIVE_REQUESTS.inc()
         start_time = time.time()
 
@@ -138,7 +144,7 @@ if mode == "Single Prediction":
                 # Metrics: success
                 # -------------------------
                 metrics.FRONTEND_LATENCY.labels(mode='single').observe(latency)
-                metrics.TEXTS_PROCESSED.labels(mode="single").inc(0)
+                metrics.TEXTS_PROCESSED.labels(mode="single").inc()
 
                 show_single_results(labels)
 

@@ -305,7 +305,7 @@
             "insertNulls": false,
             "lineInterpolation": "stepBefore",
             "lineWidth": 3,
-            "pointSize": 5,
+            "pointSize": 8,
             "scaleDistribution": {
               "type": "linear"
             },
@@ -441,7 +441,7 @@
               "fill": "solid"
             },
             "lineWidth": 3,
-            "pointSize": 14,
+            "pointSize": 8,
             "scaleDistribution": {
               "type": "linear"
             },
@@ -502,6 +502,30 @@
                 }
               }
             ]
+          },
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "single"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": true,
+                  "viz": true
+                }
+              }
+            ]
           }
         ]
       },
@@ -558,6 +582,7 @@
             "axisBorderShow": true,
             "axisCenteredZero": false,
             "axisColorMode": "text",
+            "axisGridShow": true,
             "axisLabel": "Inference Time",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -571,16 +596,16 @@
               "viz": false
             },
             "insertNulls": false,
-            "lineInterpolation": "stepBefore",
+            "lineInterpolation": "linear",
             "lineStyle": {
               "fill": "solid"
             },
             "lineWidth": 3,
-            "pointSize": 5,
+            "pointSize": 8,
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "auto",
+            "showPoints": "always",
             "showValues": false,
             "spanNulls": false,
             "stacking": {
@@ -605,19 +630,34 @@
               }
             ]
           },
-          "unit": "µs"
+          "unit": "s"
         },
         "overrides": [
           {
             "matcher": {
               "id": "byName",
-              "options": "{instance=\"localhost:8000\", job=\"image-captioning-app\"}"
+              "options": "bulk"
             },
             "properties": [
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "super-light-blue",
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "single"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
                   "mode": "fixed"
                 }
               }
@@ -636,8 +676,8 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": false
+          "placement": "right",
+          "showLegend": true
         },
         "tooltip": {
           "hideZeros": false,
@@ -650,23 +690,13 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "ffgpmnz8xnp4wa"
-          },
-          "editorMode": "code",
-          "expr": "(\n  inference_latency_seconds_sum \n  / inference_latency_seconds_count\n)",
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
             "uid": "cfkh45higoz5sc"
           },
           "editorMode": "code",
+          "exemplar": false,
           "expr": "(\n    frontend_latency_seconds_sum\n    / frontend_latency_seconds_count\n)",
           "instant": false,
-          "legendFormat": "__auto",
+          "legendFormat": "{{mode}}",
           "range": true,
           "refId": "B"
         }
@@ -704,7 +734,7 @@
             "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 3,
-            "pointSize": 5,
+            "pointSize": 8,
             "scaleDistribution": {
               "type": "linear"
             },
@@ -1241,6 +1271,6 @@
   "timezone": "browser",
   "title": "Arxiv Classifier Monitoring UI",
   "uid": "ad7h569",
-  "version": 6,
+  "version": 9,
   "weekStart": ""
 }
